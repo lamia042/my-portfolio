@@ -6,7 +6,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 const journeyData = [
   {
-    year: "2025",
+    year: "2025 September-21",
+    title: "Assistant Webmaster",
+    description:
+      "Appointed as Assistant Webmaster at IEEE IU, focusing on website management and digital presence.",
+  },
+  {
+    year: "2025 January",
     title: "Started Learning Web Development",
     description:
       "Began learning web development with HTML, CSS, JavaScript, and React, building small projects to apply practical skills.",

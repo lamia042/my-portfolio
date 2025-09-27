@@ -1,106 +1,118 @@
 import React, { useState, useEffect } from "react";
+import GitHubTopStats from "./github/GitHubTopStats";
+import GitHubLanguages from "./github/GitHubLanguages";
+import GitHubCommits from "./github/GitHubCommits";
 
-const GitHubStats = ({ username, token }) => {
+const GitHubInfo = ({ username, token }) => {
   const [userData, setUserData] = useState(null);
   const [repos, setRepos] = useState([]);
   const [mostUsedLang, setMostUsedLang] = useState([]);
   const [recentCommits, setRecentCommits] = useState([]);
+  const [error, setError] = useState(null);
+
+  const headers = token ? { Authorization: `token ${token}` } : {};
 
   useEffect(() => {
-    const headers = token ? { Authorization: `token ${token}` } : {};
+    const fetchData = async () => {
+      try {
+        // 1️⃣ User data
+        const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
+        const userJson = await userRes.json();
+        if (userJson.message) throw new Error(userJson.message);
+        setUserData(userJson);
 
-    // Fetch user data
-    fetch(`https://api.github.com/users/${username}`, { headers })
-      .then((res) => res.json())
-      .then(setUserData);
-
-    // Fetch repos
-    fetch(`https://api.github.com/users/${username}/repos?per_page=100`, { headers })
-      .then((res) => res.json())
-      .then((reposData) => {
-        setRepos(reposData);
-
-        // Most used language
-        const languages = {};
-        reposData.forEach((repo) => {
-          if (repo.language) languages[repo.language] = (languages[repo.language] || 0) + 1;
-        });
-        const sortedLang = Object.entries(languages)
-          .sort((a, b) => b[1] - a[1])
-          .map((lang) => lang[0])
-          .slice(0, 5);
-        setMostUsedLang(sortedLang);
-
-        // Fetch recent commits (last 5)
-        const commitPromises = reposData.slice(0, 5).map((repo) =>
-          fetch(`https://api.github.com/repos/${username}/${repo.name}/commits?per_page=1`, { headers })
-            .then((res) => res.json())
-            .then((commit) => ({ repo: repo.name, commit: commit[0] }))
+        // 2️⃣ Repos
+        const repoRes = await fetch(
+          `https://api.github.com/users/${username}/repos?per_page=100`,
+          { headers }
         );
-        Promise.all(commitPromises).then(setRecentCommits);
-      });
+        const repoJson = await repoRes.json();
+        if (!Array.isArray(repoJson)) throw new Error(repoJson.message || "Failed to fetch repos");
+        setRepos(repoJson);
+
+        // 3️⃣ Most used languages
+        const languages = {};
+        repoJson.forEach((repo) => {
+          if (repo.language) {
+            languages[repo.language] = (languages[repo.language] || 0) + 1;
+          }
+        });
+        setMostUsedLang(
+          Object.entries(languages)
+            .sort((a, b) => b[1] - a[1])
+            .map(([lang]) => lang)
+            .slice(0, 5)
+        );
+
+        // 4️⃣ Recent commits (last 5 updated repos)
+        const sortedRepos = [...repoJson].sort(
+          (a, b) => new Date(b.pushed_at) - new Date(a.pushed_at)
+        );
+
+        const commitPromises = sortedRepos.slice(0, 5).map(async (repo) => {
+          try {
+            const commitRes = await fetch(
+              `https://api.github.com/repos/${username}/${repo.name}/commits?per_page=1`,
+              { headers }
+            );
+            if (!commitRes.ok) return { repo: repo.name, commit: null };
+            const commitData = await commitRes.json();
+            return { repo: repo.name, commit: Array.isArray(commitData) ? commitData[0] : null };
+          } catch {
+            return { repo: repo.name, commit: null };
+          }
+        });
+
+        const commits = await Promise.all(commitPromises);
+        setRecentCommits(commits);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchData();
   }, [username, token]);
 
-  if (!userData) return <p>Loading GitHub data...</p>;
+  if (error) {
+    if (error.includes("API rate limit")) {
+      return <p className="text-center text-red-400">⚠️ API rate limit exceeded. Please add a token.</p>;
+    }
+    return <p className="text-center text-red-400">⚠️ {error}</p>;
+  }
 
-  const totalStars = repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+  if (!userData) {
+    return <p className="text-center text-gray-400">Loading GitHub data...</p>;
+  }
+
+  const totalStars = repos.reduce((sum, r) => sum + r.stargazers_count, 0);
 
   return (
-    <section className="py-10 px-6 md:px-20 bg-gray-900 text-gray-300">
-      <h2 className="text-3xl md:text-5xl font-bold text-indigo-500 mb-4 text-center">
+    <section className="py-10 px-6 md:px-20 text-gray-300">
+      <h2 className="text-3xl md:text-5xl font-bold text-gray-200 mb-4 text-center">
         GitHub Activity
       </h2>
-      <p className="text-center text-xl mb-8">My latest contributions and coding activity</p>
+      <p className="text-center text-lg md:text-xl mb-10 text-gray-400">
+        My coding journey at a glance
+      </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center mb-10">
-        <div className="bg-gray-800 p-6 border rounded-lg shadow-md">
-          <p className="text-indigo-400 font-semibold text-xl">Repositories</p>
-          <p className="text-2xl font-bold mt-2">{userData.public_repos}</p>
-        </div>
-        <div className="bg-gray-800 p-6 border rounded-lg shadow-md">
-          <p className="text-indigo-400 font-semibold text-xl">Total Stars</p>
-          <p className="text-2xl font-bold mt-2">{totalStars}</p>
-        </div>
-        <div className="bg-gray-800 border p-6 rounded-lg shadow-md">
-          <p className="text-indigo-400 font-semibold text-xl">Followers</p>
-          <p className="text-2xl font-bold mt-2">{userData.followers}</p>
-        </div>
-        <div className="bg-gray-800 p-6 border rounded-lg shadow-md">
-          <p className="text-indigo-400 font-semibold text-xl">Recent Commits</p>
-          <p className="text-2xl font-bold mt-2">{userData.recentCommits}</p>
-        </div>
-        
-      </div>
+      {/* Top Stats */}
+      <GitHubTopStats
+        repos={userData?.public_repos || 0}
+        stars={totalStars || 0}
+        followers={userData?.followers || 0}
+        commits={recentCommits.filter((c) => c.commit !== null).length}
+      />
 
-      <div className="mb-10">
-        <h3 className="text-2xl font-semibold mb-4 text-gray-200">Most Used Languages</h3>
-        <div className="flex flex-wrap gap-4">
-          {mostUsedLang.map((lang, i) => (
-            <span key={i} className="bg-indigo-600 px-4 py-2 rounded-full">
-              {lang}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Languages */}
+      <GitHubLanguages langs={mostUsedLang} />
 
-      <div>
-        <h3 className="text-2xl font-semibold mb-4 text-gray-200">Recent Commits</h3>
-        <ul className="space-y-3">
-          {recentCommits.map((item, i) => (
-            <li key={i} className="bg-gray-800 p-4 rounded-lg shadow-md">
-              <p className="font-semibold">{item.repo}</p>
-              <p className="text-gray-300 text-sm">{item.commit?.commit?.message}</p>
-              <p className="text-gray-400 text-xs">
-                {item.commit?.commit?.author?.date
-                  ? new Date(item.commit.commit.author.date).toLocaleString()
-                  : ""}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Recent Commits */}
+      <GitHubCommits
+        username={username}
+        commits={recentCommits.filter((c) => c.commit !== null)}
+      />
     </section>
   );
 };
 
-export default GitHubStats;
+export default GitHubInfo;
