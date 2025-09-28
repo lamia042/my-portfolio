@@ -88,7 +88,7 @@ const GitHubInfo = ({ username, token }) => {
 
   return (
     <section className="py-10 px-6 md:px-20 text-gray-300">
-      <h2 className="text-3xl md:text-5xl font-bold text-gray-200 mb-4 text-center">
+      <h2 className="text-3xl my-20 md:text-5xl font-bold text-gray-200 mb-4 text-center">
         GitHub Activity
       </h2>
       <p className="text-center text-lg md:text-xl mb-10 text-gray-400">

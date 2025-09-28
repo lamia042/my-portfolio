@@ -88,7 +88,7 @@ const Contact = () => {
   }, []);
 
   return (
-    <section className="py-16 px-6 md:px-20 bg-gray-900 text-gray-200">
+    <section className="py-16 px-6 md:px-20 text-gray-200">
       <h2 className="text-3xl md:text-5xl font-bold text-center mb-12">
         Let’s Connect
       </h2>
@@ -117,50 +117,54 @@ const Contact = () => {
             {/* Email */}
             <div
               ref={(el) => (infoRefs.current[0] = el)}
-              className="flex items-center justify-between bg-gray-800 p-5 rounded-lg shadow-md hover:scale-[1.02] transition"
+              className="flex items-center justify-between bg-gray-800 p-5 rounded-lg shadow-md hover:scale-[1.02] transition-transform duration-300 w-full"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="bg-blue-400 p-6 rounded-sm">
-                    <FaEnvelope className="text-white text-xl" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-indigo-500 font-bold">Email</span>
-                    <span>lamiaaktar1216@gmail.com</span>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-blue-400 p-5 rounded-sm flex-shrink-0">
+                  <FaEnvelope className="text-white text-2xl" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-indigo-500 font-bold md
+                  
+                  :text-lg">
+                    Email
+                  </span>
+                  <span className="text-gray-300 break-all">
+                    lamiaaktar1216@gmail.com
+                  </span>
                 </div>
               </div>
               <button
-                onClick={() => copyToClipboard("lamia@example.com")}
-                className="text-indigo-400 hover:text-indigo-300"
+                onClick={() => copyToClipboard("lamiaaktar1216@gmail.com")}
+                className="text-indigo-400 hover:text-indigo-300 transition-colors duration-200 ml-4 flex-shrink-0"
               >
-                <FaCopy />
+                <FaCopy className="text-xl" />
               </button>
             </div>
 
             {/* Phone */}
             <div
               ref={(el) => (infoRefs.current[1] = el)}
-              className="flex items-center justify-between bg-gray-800 p-5 rounded-lg shadow-md hover:scale-[1.02] transition"
+              className="flex items-center justify-between bg-gray-800 p-5 rounded-lg shadow-md hover:scale-[1.02] transition-transform duration-300 w-full"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-400 p-6 rounded-sm">
-                    <FaPhone className="text-white text-xl" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-indigo-500 font-bold">
-                      Phone Number
-                    </span>
-                    <span className="text-gray-400">+8801996002586</span>
-                  </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-green-400 p-5 rounded-sm flex-shrink-0">
+                  <FaPhone className="text-white text-2xl" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-indigo-500 font-bold md:text-lg">
+                    Phone Number
+                  </span>
+                  <span className="text-gray-300 break-all">
+                    +8801996002586
+                  </span>
                 </div>
               </div>
               <button
-                onClick={() => copyToClipboard("+8801234567890")}
-                className="text-indigo-400 hover:text-indigo-300"
+                onClick={() => copyToClipboard("+8801996002586")}
+                className="text-indigo-400 hover:text-indigo-300 transition-colors duration-200 ml-4 flex-shrink-0"
               >
-                <FaCopy />
+                <FaCopy className="text-xl" />
               </button>
             </div>
 
@@ -189,7 +193,7 @@ const Contact = () => {
             Send Me a Message
           </h3>
           <form ref={form} onSubmit={sendEmail} className="grid gap-6">
-            <div className="flex gap-6">
+            <div className="md:flex gap-6">
               <div className="flex-1 flex flex-col gap-2">
                 <label htmlFor="from_name">Your Name*</label>
                 <input

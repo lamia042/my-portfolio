@@ -7,6 +7,7 @@ import GitHubStats from "../components/GitHubInfo";
 import Navbar from "../components/Navbar";
 import Contact from "../components/Contact";
 import Projects from "../components/Projects";
+import Footer from "../components/Footer";
 
 const Home = () => {
 
@@ -22,6 +23,7 @@ const Home = () => {
         <Projects />
         <GitHubStats username="lamia042" />
         <Contact />
+        <Footer />
       </div>
     </section>
   );

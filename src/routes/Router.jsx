@@ -9,6 +9,8 @@ import MyJourney from "../components/MyJourney";
 import Contact from "../components/Contact";
 import GitHubInfo from "../components/GitHubInfo";
 import Projects from "../components/Projects";
+import Certificates from "../components/Certificates";
+import Education from "../components/Education";
 
 const Router = createBrowserRouter([
   {
@@ -32,8 +34,8 @@ const Router = createBrowserRouter([
       element: <MyJourney />,
       },
       {
-      path: "/githubactivity",
-      element: <GitHubInfo />,
+      path: "/githubact",
+      element: <GitHubInfo username="lamia042" />,
       },
       {
       path: "/contact",
@@ -42,6 +44,14 @@ const Router = createBrowserRouter([
       {
       path: "/projects",
       element: <Projects />,
+      },
+      {
+      path: "/certificates",
+      element: <Certificates />,
+      },
+      {
+      path: "/education",
+      element: <Education />,
       },
     ]
   },
