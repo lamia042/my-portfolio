@@ -88,7 +88,7 @@ const Contact = () => {
   }, []);
 
   return (
-    <section className="py-16 px-6 md:px-20 text-gray-200">
+    <section className="py-16 px-6 md:px-20 pt-20 text-gray-200">
       <h2 className="text-3xl md:text-5xl font-bold text-center mb-12">
         Let’s Connect
       </h2>

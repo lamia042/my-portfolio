@@ -28,8 +28,8 @@ const Skills = () => {
   { icon: <SiTailwindcss className="text-blue-400" />, name: "Tailwind" },
   { icon: <FaCss3Alt className="text-blue-600" />, name: "CSS" },
   { icon: <FaHtml5 className="text-orange-500" />, name: "HTML" },
-  { icon: <SiC className="text-gray-400" />, name: "C" },
-  { icon: <SiCplusplus className="text-blue-500" />, name: "C++" },
+  // { icon: <SiC className="text-gray-400" />, name: "C" },
+  // { icon: <SiCplusplus className="text-blue-500" />, name: "C++" },
   { icon: <FaPython className="text-yellow-400" />, name: "Python" },
   { icon: <FaReact className="text-cyan-400" />, name: "React" },
 
